@@ -1,11 +1,19 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QLabel
 
-class MainWindow(QMainWindow):
-    def __init__(self):
+from QTCreator.QTCreator import QTCreator
+
+class ProcessScreen(QMainWindow):
+    def __init__(self, select_screen: QMainWindow):
         super().__init__()
-
+        self.creator = QTCreator()
+        self.select_screen = select_screen
+        self.initUI()
+        
+    
+    def initUI(self):
+        print("ProcessScreen initUI")
         self.setWindowTitle("TabView Example")
-
+        self.creator.center(self)
         # Ana widget oluşturma
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -34,9 +42,12 @@ class MainWindow(QMainWindow):
 
         # Tab widget'ı ana layout'a ekleme
         layout.addWidget(tab_widget)
+        
+    def closeEvent(self, event):
+        if event.spontaneous():
+            self.select_screen.show()
+            self.deleteLater()
+            event.accept()
+        else:
+            event.ignore()
 
-if __name__ == "__main__":
-    app = QApplication([])
-    window = MainWindow()
-    window.show()
-    app.exec()

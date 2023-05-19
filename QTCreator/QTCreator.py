@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QComboBox, QWidget, QAction, QMenuBar, QTableWidgetItem, QTableWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QComboBox, QWidget, QAction, QMenuBar, QTableWidgetItem, QTableWidget, QDesktopWidget, QTabWidget
 from PyQt5.QtGui import QColor
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
 from PyQt5.QtCore import QUrl
@@ -66,8 +66,26 @@ class QTCreator:
         url = QUrl(url)
         webview.load(url)
         return webview
-    
 
+    def QTabWidgetCreator(self, name: str, tabs: dict, settings: dict = {}, css: str = "") -> QTabWidget:
+        tabWidget = QTabWidget()
+        for tabName, tabContent in tabs.items():
+            tab = QWidget()
+            layout = QVBoxLayout()
+            layout.addWidget(tabContent)
+            tab.setLayout(layout)
+            tabWidget.addTab(tab, tabName)
+        self.__apply_settings(tabWidget, settings)
+        self.__apply_css(tabWidget, css)
+        return tabWidget
+    
+    def center(self, window: QMainWindow):
+        screen = QDesktopWidget().screenGeometry()
+        dimensions = window.geometry()
+        x = (screen.width() - dimensions.width()) // 2
+        y = (screen.height() - dimensions.height()) // 2
+        window.move(x, y)
+        
     def __apply_settings(self, widget: QWidget, settings: dict = {}) -> None:
         try:
             if 'readonly' in settings:
@@ -84,3 +102,10 @@ class QTCreator:
             widget.setStyleSheet(css)
         except:
             print(widget.objectName, 'için CSS uygulanamadı.')
+            
+# Tabları oluştur
+# tabs = {
+#     "Sekme 1": label1,
+#     "Sekme 2": label2
+# }
+# tabWidget = qtCreator.QTabWidgetCreator("Tablar", tabs)
